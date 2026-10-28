@@ -46,9 +46,26 @@ h2{font-size:1.25rem;margin:0 0 16px;letter-spacing:.2px}
 .note{font-size:.9rem;color:var(--muted)}
 footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:20px}
 @media (max-width:520px){h1{font-size:1.7rem}header.hero{padding-top:40px}}
+
+/* ---- 3D layer ---- */
+#scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+header.hero,main,footer{position:relative;z-index:1}
+.hero-row{perspective:900px}
+.hero img{transition:transform .15s ease-out;will-change:transform;box-shadow:0 12px 40px rgba(11,107,203,.25)}
+.card{transform-style:preserve-3d;transition:transform .18s ease-out,box-shadow .25s ease,border-color .25s ease;will-change:transform}
+.card.tilting{box-shadow:0 18px 40px rgba(0,0,0,.22);border-color:var(--accent)}
+.tiltwrap{perspective:1000px}
+.reveal{opacity:0;transform:translateY(28px) rotateX(8deg);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.card{background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(6px)}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .card,.hero img{transition:none}
+}
 </style>
 </head>
 <body>
+<canvas id="scene" aria-hidden="true"></canvas>
 
 <header class="hero">
   <div class="wrap hero-row">
@@ -67,12 +84,12 @@ footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px sol
 
 <main class="wrap">
 
-  <section>
+  <section class="reveal">
     <h2>About</h2>
     <p>I work on CI/CD pipelines, containers and Kubernetes, with a focus on catching security problems before code is deployed. I like to build things end to end, run them for real, and write down what broke and how I fixed it.</p>
   </section>
 
-  <section id="projects">
+  <section id="projects" class="tiltwrap">
     <h2>Projects</h2>
 
     <div class="card">
@@ -107,7 +124,7 @@ footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px sol
     </div>
   </section>
 
-  <section>
+  <section class="reveal">
     <h2>Tools I work with</h2>
     <div class="chips">
       <span class="chip">Docker</span><span class="chip">Docker Compose</span><span class="chip">Kubernetes</span>
@@ -116,7 +133,7 @@ footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px sol
     </div>
   </section>
 
-  <section>
+  <section class="reveal">
     <h2>Contact</h2>
     <p>The best way to reach me is a message on <a href="https://www.linkedin.com/in/sherafgun-zafar">LinkedIn</a>. For freelance work, see my <a href="https://www.fiverr.com/sherafgan_zafar">Fiverr profile</a>.</p>
   </section>
@@ -127,5 +144,148 @@ footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px sol
   <div class="wrap">© Sherafgan Zafar</div>
 </footer>
 
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canvas = document.getElementById('scene');
+  var ctx = canvas.getContext('2d');
+  var W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2);
+  var mouse={x:0,y:0}, smooth={x:0,y:0};
+  var accent='#0b6bcb', lineRGB='11,107,203';
+
+  function readColors(){
+    var c=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    accent=c||accent;
+    var m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(accent);
+    if(m){lineRGB=parseInt(m[1],16)+','+parseInt(m[2],16)+','+parseInt(m[3],16);}
+  }
+  readColors();
+  if(window.matchMedia){
+    var mq=window.matchMedia('(prefers-color-scheme: dark)');
+    (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(readColors);
+  }
+
+  function resize(){
+    W=window.innerWidth;H=window.innerHeight;
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();window.addEventListener('resize',resize);
+
+  // nodes: points in a sphere (a small "cluster")
+  var N=W<600?46:84, nodes=[], i;
+  for(i=0;i<N;i++){
+    var u=Math.random(),v=Math.random();
+    var th=2*Math.PI*u, ph=Math.acos(2*v-1), r=Math.cbrt(Math.random())*1.0;
+    nodes.push({x:r*Math.sin(ph)*Math.cos(th),y:r*Math.sin(ph)*Math.sin(th),z:r*Math.cos(ph)});
+  }
+  // small wireframe cubes ("containers") orbiting the cluster
+  var cubeV=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+  var cubeE=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+  var cubes=[{r:1.55,s:.22,sp:.35,off:0,tilt:.5},{r:1.9,s:.16,sp:-.28,off:2.1,tilt:-.7},{r:1.35,s:.12,sp:.5,off:4.2,tilt:.9}];
+
+  function rot(p,ax,ay){
+    var cy=Math.cos(ay),sy=Math.sin(ay),cx=Math.cos(ax),sx=Math.sin(ax);
+    var x=p[0]*cy+p[2]*sy, z=-p[0]*sy+p[2]*cy, y=p[1]*cx-z*sx;
+    z=p[1]*sx+z*cx; return [x,y,z];
+  }
+  function project(p,scale,cx,cy){
+    var f=3.2/(3.2+p[2]); return [cx+p[0]*scale*f, cy+p[1]*scale*f, f];
+  }
+
+  var t0=performance.now(), running=true;
+  function frame(now){
+    if(!running){return;}
+    var t=(now-t0)/1000;
+    smooth.x+=(mouse.x-smooth.x)*.05; smooth.y+=(mouse.y-smooth.y)*.05;
+    var sc=window.scrollY||0;
+    var ay=t*.18+smooth.x*.7+sc*.0012, ax=.35+smooth.y*.45+Math.sin(t*.2)*.1;
+    var scale=Math.min(W,H)*(W<700?.4:.3);
+    var cx=W<700?W*.5:W*.82, cy=H*(W<700?.34:.46)-sc*.08;
+
+    ctx.clearRect(0,0,W,H);
+    var fade=W<700?.45:1;
+
+    var P=[],j;
+    for(i=0;i<nodes.length;i++){
+      var q=rot([nodes[i].x,nodes[i].y,nodes[i].z],ax,ay);
+      P.push({q:q,p:project(q,scale,cx,cy)});
+    }
+    ctx.lineWidth=1;
+    for(i=0;i<P.length;i++){
+      for(j=i+1;j<P.length;j++){
+        var dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,dz=nodes[i].z-nodes[j].z;
+        var d=dx*dx+dy*dy+dz*dz;
+        if(d<.24){
+          var depth=(P[i].p[2]+P[j].p[2])/2;
+          var a=(1-d/.24)*.35*depth*fade;
+          ctx.strokeStyle='rgba('+lineRGB+','+a.toFixed(3)+')';
+          ctx.beginPath();ctx.moveTo(P[i].p[0],P[i].p[1]);ctx.lineTo(P[j].p[0],P[j].p[1]);ctx.stroke();
+        }
+      }
+    }
+    for(i=0;i<P.length;i++){
+      var f=P[i].p[2], rr=1.2+f*1.9;
+      ctx.fillStyle='rgba('+lineRGB+','+(Math.min(.9,.25+f*.45)*fade).toFixed(3)+')';
+      ctx.beginPath();ctx.arc(P[i].p[0],P[i].p[1],rr,0,6.2832);ctx.fill();
+    }
+    // cubes
+    cubes.forEach(function(c){
+      var ang=t*c.sp+c.off;
+      var center=rot([Math.cos(ang)*c.r,Math.sin(ang*.7)*c.r*.5,Math.sin(ang)*c.r],ax,ay);
+      var pv=cubeV.map(function(v){
+        var r1=rot([v[0]*c.s,v[1]*c.s,v[2]*c.s],t*.6+c.tilt,t*.8+c.off);
+        return project([r1[0]+center[0],r1[1]+center[1],r1[2]+center[2]],scale,cx,cy);
+      });
+      var fa=Math.min(.85,.3+pv[0][2]*.4)*fade;
+      ctx.strokeStyle='rgba('+lineRGB+','+fa.toFixed(3)+')';ctx.lineWidth=1.4;
+      ctx.beginPath();
+      cubeE.forEach(function(e){ctx.moveTo(pv[e[0]][0],pv[e[0]][1]);ctx.lineTo(pv[e[1]][0],pv[e[1]][1]);});
+      ctx.stroke();
+    });
+    if(!reduce){requestAnimationFrame(frame);}
+  }
+  if(reduce){requestAnimationFrame(frame);}
+  else{requestAnimationFrame(frame);}
+  document.addEventListener('visibilitychange',function(){
+    if(reduce){return;}
+    running=!document.hidden; if(running){requestAnimationFrame(frame);}
+  });
+  window.addEventListener('mousemove',function(e){
+    mouse.x=(e.clientX/window.innerWidth-.5)*2; mouse.y=(e.clientY/window.innerHeight-.5)*2;
+  },{passive:true});
+
+  // 3D tilt on cards and the photo
+  var canTilt=!reduce && window.matchMedia('(hover:hover)').matches;
+  function tilt(el,max,lift){
+    el.addEventListener('mousemove',function(e){
+      var b=el.getBoundingClientRect();
+      var px=(e.clientX-b.left)/b.width-.5, py=(e.clientY-b.top)/b.height-.5;
+      el.style.transform='perspective(900px) rotateY('+(px*max).toFixed(2)+'deg) rotateX('+(-py*max).toFixed(2)+'deg) translateZ('+lift+'px)';
+      el.classList.add('tilting');
+    });
+    el.addEventListener('mouseleave',function(){el.style.transform='';el.classList.remove('tilting');});
+  }
+  if(canTilt){
+    document.querySelectorAll('.card').forEach(function(c){tilt(c,7,10);});
+    var ph=document.querySelector('.hero img'); if(ph){tilt(ph,18,6);}
+  }
+
+  // reveal on scroll
+  var items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:.12});
+    items.forEach(function(el){io.observe(el);});
+    document.querySelectorAll('.card').forEach(function(el,k){
+      el.classList.add('reveal');el.style.transitionDelay=(k*90)+'ms';io.observe(el);
+    });
+  } else {
+    items.forEach(function(el){el.classList.add('in');});
+  }
+})();
+</script>
 </body>
 </html>
