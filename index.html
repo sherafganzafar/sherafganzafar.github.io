@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sherafgan Zafar | DevOps Engineer</title>
+<meta name="description" content="DevOps Engineer in Lahore working with Docker, Kubernetes, GitHub Actions, Snyk and cloud platforms.">
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --text:#14181f; --muted:#5b6472; --line:#e1e5ea;
+  --accent:#0b6bcb; --chip:#eaf1fa; --chip-text:#0b4f99;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0d1117; --card:#151b23; --text:#e8edf3; --muted:#9aa5b4; --line:#262e39;
+        --accent:#58a6ff; --chip:#1a2533; --chip-text:#9ec8ff;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header.hero{padding:64px 0 36px}
+.hero-row{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.hero img{width:132px;height:132px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--line)}
+h1{margin:0 0 4px;font-size:2.1rem;line-height:1.2}
+.role{margin:0 0 14px;color:var(--muted);font-size:1.05rem}
+.links{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-block;padding:8px 16px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--text);font-weight:600;font-size:.95rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:hover{text-decoration:none;border-color:var(--accent)}
+section{padding:30px 0}
+h2{font-size:1.25rem;margin:0 0 16px;letter-spacing:.2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:22px;margin-bottom:16px}
+.card h3{margin:0 0 6px;font-size:1.1rem}
+.card p{margin:8px 0;color:var(--muted)}
+.card ul{margin:8px 0 12px;padding-left:20px;color:var(--muted)}
+.card li{margin:4px 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{background:var(--chip);color:var(--chip-text);padding:3px 11px;border-radius:999px;
+  font-size:.85rem;font-weight:600}
+.note{font-size:.9rem;color:var(--muted)}
+footer{padding:36px 0 56px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);margin-top:20px}
+@media (max-width:520px){h1{font-size:1.7rem}header.hero{padding-top:40px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-row">
+    <img src="photo.jpg" alt="Portrait of Sherafgan Zafar">
+    <div>
+      <h1>Sherafgan Zafar</h1>
+      <p class="role">DevOps Engineer · Lahore, Pakistan</p>
+      <div class="links">
+        <a class="btn primary" href="https://github.com/sherafganzafar">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/sherafgun-zafar">LinkedIn</a>
+        <a class="btn" href="https://www.fiverr.com/sherafgan_zafar">Fiverr</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2>About</h2>
+    <p>I work on CI/CD pipelines, containers and Kubernetes, with a focus on catching security problems before code is deployed. I like to build things end to end, run them for real, and write down what broke and how I fixed it.</p>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+
+    <div class="card">
+      <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template">DevSecOps CI Pipeline with Snyk Security Gate</a></h3>
+      <p class="note">Personal project</p>
+      <p>A reusable GitHub Actions template. Every push scans the Python dependencies with Snyk and the build fails on a high severity finding. Then the image is built and deployed to a kind cluster for a /health smoke test.</p>
+      <ul>
+        <li>Snyk report summarized by a Python script that enforces the severity threshold</li>
+        <li>Caught a high severity gunicorn issue (HTTP Request Smuggling); fixed by upgrading to 23.0.0</li>
+        <li>Docker image runs as a non-root user; Kubernetes manifests include probes and resource limits</li>
+      </ul>
+      <div class="chips"><span class="chip">GitHub Actions</span><span class="chip">Snyk</span><span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">Python</span></div>
+    </div>
+
+    <div class="card">
+      <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template">Dockerized App Deploy to Azure AKS via GitHub Actions</a></h3>
+      <p class="note">Personal project</p>
+      <p>A workflow that builds the image, pushes it to Azure Container Registry and deploys it to AKS, with cost controls: free tier cluster, one small node, a budget alert and an automatic cleanup workflow.</p>
+      <ul>
+        <li>Pods kept restarting while the app was healthy; found probe timeouts using kubectl describe, events and logs</li>
+        <li>Relaxed the probes, raised resource limits and moved gunicorn to the gthread worker</li>
+        <li>Result: both pods ran 17 minutes with 0 restarts, then the resource group was deleted</li>
+      </ul>
+      <div class="chips"><span class="chip">Azure AKS</span><span class="chip">ACR</span><span class="chip">GitHub Actions</span><span class="chip">kubectl</span><span class="chip">Troubleshooting</span></div>
+    </div>
+
+    <div class="card">
+      <h3><a href="https://github.com/sherafganzafar/devsecguard-ai">devsecguard-ai</a></h3>
+      <p class="note">Personal project</p>
+      <p>Security automation experiments in Python. See the repository for the current state of the work.</p>
+      <div class="chips"><span class="chip">Python</span><span class="chip">Security</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tools I work with</h2>
+    <div class="chips">
+      <span class="chip">Docker</span><span class="chip">Docker Compose</span><span class="chip">Kubernetes</span>
+      <span class="chip">GitHub Actions</span><span class="chip">Snyk</span><span class="chip">Azure AKS</span>
+      <span class="chip">AWS EC2</span><span class="chip">Python</span><span class="chip">Linux</span><span class="chip">Git</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>The best way to reach me is a message on <a href="https://www.linkedin.com/in/sherafgun-zafar">LinkedIn</a>. For freelance work, see my <a href="https://www.fiverr.com/sherafgan_zafar">Fiverr profile</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© Sherafgan Zafar</div>
+</footer>
+
+</body>
+</html>
