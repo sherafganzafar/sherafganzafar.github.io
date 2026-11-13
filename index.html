@@ -91,6 +91,30 @@ header.hero,main,footer{position:relative;z-index:1}
 
   <section id="projects" class="tiltwrap">
     <h2>Projects</h2>
+    <div class="card">
+      <h3><a href="https://github.com/sherafganzafar/jenkins-ci-optimization">Jenkins CI/CD Pipeline Optimization for a Rails App</a></h3>
+      <p class="note">Personal project</p>
+      <p>A baseline and an optimized declarative Jenkins pipeline for a Rails 8 app, running in Docker and measured on the same machine. The optimized one uses a Docker agent with a gem cache volume, parallel checks, a timeout and automatic abort of superseded builds.</p>
+      <ul>
+        <li>Gem cache cut the install stage from 14m 06s to 1m 14s; build time up to the Test stage went from 16m 33s to 4m 02s</li>
+        <li>Parallel Lint, Security and Test did not help on a 4 CPU laptop because the stages compete for resources</li>
+        <li>bundler-audit failed the Security stage on real Rails advisories; fixed by updating Rails to 8.1.4.1 and three dependencies</li>
+      </ul>
+      <div class="chips"><span class="chip">Jenkins</span><span class="chip">Docker</span><span class="chip">Ruby on Rails</span><span class="chip">bundler-audit</span><span class="chip">CI/CD</span></div>
+    </div>
+
+    <div class="card">
+      <h3><a href="https://github.com/sherafganzafar/rails-ci-demo">Ruby on Rails CI Pipeline with GitHub Actions</a></h3>
+      <p class="note">Personal project</p>
+      <p>A GitHub Actions pipeline for a Rails 8 app. Every push runs RuboCop, Brakeman, bundler-audit and the test suite, and the Docker image is built on main.</p>
+      <ul>
+        <li>Fixed failing runs: Gemfile.lock was missing the x86_64-linux platform, and Ruby 3.3.6 was not available on the new ubuntu-latest runner, so the workflow uses ruby-version 3.3</li>
+        <li>Security job combines Brakeman static analysis with bundler-audit dependency advisories; Dependabot keeps gems updated</li>
+        <li>Tests run on SQLite, so the pipeline needs no database service</li>
+      </ul>
+      <div class="chips"><span class="chip">GitHub Actions</span><span class="chip">Ruby on Rails</span><span class="chip">RuboCop</span><span class="chip">Brakeman</span><span class="chip">Docker</span></div>
+    </div>
+
 
     <div class="card">
       <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template">DevSecOps CI Pipeline with Snyk Security Gate</a></h3>
