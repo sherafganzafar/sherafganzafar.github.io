@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -91,6 +92,7 @@ header.hero,main,footer{position:relative;z-index:1}
 
   <section id="projects" class="tiltwrap">
     <h2>Projects</h2>
+
     <div class="card">
       <h3><a href="https://github.com/sherafganzafar/jenkins-ci-optimization">Jenkins CI/CD Pipeline Optimization for a Rails App</a></h3>
       <p class="note">Personal project</p>
@@ -100,7 +102,13 @@ header.hero,main,footer{position:relative;z-index:1}
         <li>Parallel Lint, Security and Test did not help on a 4 CPU laptop because the stages compete for resources</li>
         <li>bundler-audit failed the Security stage on real Rails advisories; fixed by updating Rails to 8.1.4.1 and three dependencies</li>
       </ul>
-      <div class="chips"><span class="chip">Jenkins</span><span class="chip">Docker</span><span class="chip">Ruby on Rails</span><span class="chip">bundler-audit</span><span class="chip">CI/CD</span></div>
+      <div class="chips">
+        <span class="chip">Jenkins</span>
+        <span class="chip">Docker</span>
+        <span class="chip">Ruby on Rails</span>
+        <span class="chip">bundler-audit</span>
+        <span class="chip">CI/CD</span>
+      </div>
     </div>
 
     <div class="card">
@@ -112,9 +120,14 @@ header.hero,main,footer{position:relative;z-index:1}
         <li>Security job combines Brakeman static analysis with bundler-audit dependency advisories; Dependabot keeps gems updated</li>
         <li>Tests run on SQLite, so the pipeline needs no database service</li>
       </ul>
-      <div class="chips"><span class="chip">GitHub Actions</span><span class="chip">Ruby on Rails</span><span class="chip">RuboCop</span><span class="chip">Brakeman</span><span class="chip">Docker</span></div>
+      <div class="chips">
+        <span class="chip">GitHub Actions</span>
+        <span class="chip">Ruby on Rails</span>
+        <span class="chip">RuboCop</span>
+        <span class="chip">Brakeman</span>
+        <span class="chip">Docker</span>
+      </div>
     </div>
-
 
     <div class="card">
       <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template">DevSecOps CI Pipeline with Snyk Security Gate</a></h3>
@@ -125,11 +138,17 @@ header.hero,main,footer{position:relative;z-index:1}
         <li>Caught a high severity gunicorn issue (HTTP Request Smuggling); fixed by upgrading to 23.0.0</li>
         <li>Docker image runs as a non-root user; Kubernetes manifests include probes and resource limits</li>
       </ul>
-      <div class="chips"><span class="chip">GitHub Actions</span><span class="chip">Snyk</span><span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">Python</span></div>
+      <div class="chips">
+        <span class="chip">GitHub Actions</span>
+        <span class="chip">Snyk</span>
+        <span class="chip">Docker</span>
+        <span class="chip">Kubernetes</span>
+        <span class="chip">Python</span>
+      </div>
     </div>
 
     <div class="card">
-      <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template">Dockerized App Deploy to Azure AKS via GitHub Actions</a></h3>
+      <h3><a href="https://github.com/sherafganzafar/devsecops-pipeline-template/blob/main/docs/AKS-SETUP.md">Dockerized App Deploy to Azure AKS via GitHub Actions</a></h3>
       <p class="note">Personal project</p>
       <p>A workflow that builds the image, pushes it to Azure Container Registry and deploys it to AKS, with cost controls: free tier cluster, one small node, a budget alert and an automatic cleanup workflow.</p>
       <ul>
@@ -137,15 +156,42 @@ header.hero,main,footer{position:relative;z-index:1}
         <li>Relaxed the probes, raised resource limits and moved gunicorn to the gthread worker</li>
         <li>Result: both pods ran 17 minutes with 0 restarts, then the resource group was deleted</li>
       </ul>
-      <div class="chips"><span class="chip">Azure AKS</span><span class="chip">ACR</span><span class="chip">GitHub Actions</span><span class="chip">kubectl</span><span class="chip">Troubleshooting</span></div>
+      <div class="chips">
+        <span class="chip">Azure AKS</span>
+        <span class="chip">ACR</span>
+        <span class="chip">GitHub Actions</span>
+        <span class="chip">kubectl</span>
+        <span class="chip">Troubleshooting</span>
+      </div>
     </div>
 
     <div class="card">
-      <h3><a href="https://github.com/sherafganzafar/devsecguard-ai">devsecguard-ai</a></h3>
+      <h3>
+        <a href="https://github.com/sherafganzafar/devsecguard-ai">
+          DevSecGuard AI — Automated DevSecOps Security Scanner
+        </a>
+      </h3>
       <p class="note">Personal project</p>
-      <p>Security automation experiments in Python. See the repository for the current state of the work.</p>
-      <div class="chips"><span class="chip">Python</span><span class="chip">Security</span></div>
+      <p>
+        A Python-based DevSecOps security automation tool that
+        detects exposed secrets and analyzes code vulnerabilities
+        using NVIDIA Nemotron AI through Nebius Token Factory.
+        Integrated with GitHub Actions for automated security checks.
+      </p>
+      <ul>
+        <li>Detects hardcoded credentials, exposed API keys and potential security vulnerabilities.</li>
+        <li>Uses AI-assisted analysis to identify security risks in source code.</li>
+        <li>Enforces severity-based security checks within CI/CD pipelines.</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">DevSecOps</span>
+        <span class="chip">GitHub Actions</span>
+        <span class="chip">NVIDIA Nemotron</span>
+        <span class="chip">Security Automation</span>
+      </div>
     </div>
+
   </section>
 
   <section class="reveal">
@@ -167,7 +213,6 @@ header.hero,main,footer{position:relative;z-index:1}
 <footer>
   <div class="wrap">© Sherafgan Zafar</div>
 </footer>
-
 
 <script>
 (function(){
